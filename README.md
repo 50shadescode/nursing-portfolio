@@ -41,4 +41,5 @@ nursing-portfolio/
 ├─ RN-BSN.jpg
 └─ video-testimonial.mp4
 
-https://musical-kitsune-71f696.netlify.app/
+https://nursing-assignment.netlify.app/
+
