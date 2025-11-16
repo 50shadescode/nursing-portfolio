@@ -1,6 +1,39 @@
 // ================= ENHANCED FUNCTIONALITY =================
 document.addEventListener("DOMContentLoaded", () => {
   
+  // ================= DARK MODE TOGGLE =================
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  const themeIcon = themeToggle?.querySelector('i');
+  
+  // Check for saved theme preference or default to light mode
+  const currentTheme = localStorage.getItem('theme') || 'light';
+  if (currentTheme === 'dark') {
+    body.classList.add('dark-mode');
+    if (themeIcon) {
+      themeIcon.classList.remove('fa-moon');
+      themeIcon.classList.add('fa-sun');
+    }
+  }
+  
+  // Theme toggle click handler
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+      
+      // Update icon
+      if (body.classList.contains('dark-mode')) {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+  }
+  
   // ================= MOBILE MENU TOGGLE =================
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const navMenu = document.querySelector('.nav-menu');
@@ -29,6 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
           line.style.transform = 'none';
         });
       });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        if (navMenu.classList.contains('active')) {
+          navMenu.classList.remove('active');
+          hamburgerLines.forEach(line => {
+            line.style.transform = 'none';
+          });
+        }
+      }
     });
   }
 
@@ -226,5 +271,107 @@ document.addEventListener("DOMContentLoaded", () => {
     section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     observer.observe(section);
   });
+
+  // ================= FAQ ACCORDION =================
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      const faqItem = question.parentElement;
+      const isActive = faqItem.classList.contains('active');
+      
+      // Close all FAQ items
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('active');
+        item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+      });
+      
+      // Open clicked item if it wasn't active
+      if (!isActive) {
+        faqItem.classList.add('active');
+        question.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // ================= PRIVACY POLICY & TERMS MODALS =================
+  const privacyLinks = document.querySelectorAll('a[href="#privacy"]');
+  const termsLinks = document.querySelectorAll('a[href="#terms"]');
+  const privacyModal = document.getElementById('privacy-modal');
+  const termsModal = document.getElementById('terms-modal');
+  const modalCloses = document.querySelectorAll('.modal-close');
+
+  // Open privacy modal
+  privacyLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (privacyModal) {
+        privacyModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  // Open terms modal
+  termsLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (termsModal) {
+        termsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    });
+  });
+
+  // Close modals
+  modalCloses.forEach(closeBtn => {
+    closeBtn.addEventListener('click', () => {
+      closeBtn.closest('.modal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    });
+  });
+
+  // Close modal when clicking outside
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    });
+  });
+
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      modals.forEach(modal => {
+        modal.classList.remove('active');
+      });
+      document.body.style.overflow = 'auto';
+    }
+  });
+
+  // ================= WHATSAPP FLOAT ANIMATION =================
+  const whatsappFloat = document.querySelector('.whatsapp-float');
+  if (whatsappFloat) {
+    // Pulse animation every 3 seconds
+    setInterval(() => {
+      whatsappFloat.style.animation = 'pulse 0.5s ease';
+      setTimeout(() => {
+        whatsappFloat.style.animation = '';
+      }, 500);
+    }, 3000);
+  }
+
+  // Add pulse animation to CSS
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+  `;
+  document.head.appendChild(style);
 
 });
